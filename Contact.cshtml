@@ -1,0 +1,172 @@
+﻿@model My_Portfolio.Models.contact_model
+
+@{
+    ViewData["Title"] = "Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="contact container-fluid">
+    <h1 class="text-center text-white">Contact</h1>
+
+    <div class="row contact_row">
+        <div class="Contact_content col-md-6">
+
+            <div class="loop-wrapper">
+                <div class="mountain"></div>
+                <div class="hill"></div>
+                <div class="tree"></div>
+                <div class="tree"></div>
+                <div class="tree"></div>
+                <div class="rock"></div>
+                <div class="truck"></div>
+                <div class="wheels"></div>
+            </div>
+            <br />
+            <br />
+            <h3 class="title">Contact Info</h3>
+            <div class="info">
+                <div class="maps">
+                    <a href="mailto:sales@kreatetechnologies.om">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <h3>abcdefghilkfjk@gmail.com</h3>
+                </div>
+
+                <h3><i class="fas fa-phone"></i>9870-987-976</h3>
+                <div class="maps">
+                    <a href="https: //maps.app.goo.gl/DZYvERArEizACh4W9" target="_blank">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </a>
+                    <h3>Noida, Uttar Pradesh</h3>
+                </div>
+                <div class="social">
+                    <a href="#" class="fa fa-facebook"></a>
+                    <a href="#" class="fa fa-twitter"></a>
+                    <a href="#" class="fa fa-linkedin"></a>
+                    <a href="#" class="fa fa-instagram"></a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="text-white col-md-6">
+            <form class="" id="feedbackForm">
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input id="txtname" asp-for="Name" class="form-control rounded-input" placeholder="Your Name" />
+                    <div id="nameError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input id="txtemail" asp-for="Email" class="form-control rounded-input" placeholder="Your Email" />
+                    <div id="emailError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone" class="control-label"></label>
+                    <input id="txtphone" asp-for="Phone" maxlength="10" class="form-control rounded-input" placeholder="Your Mobile" />
+                    <div id="phoneError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Message" class="control-label"></label>
+                    <textarea id="txtmessage" asp-for="Message" class="form-control rounded-input" placeholder="Your Message" rows="5"></textarea>
+                    <div id="messageError" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    @* <input type="submit" value="SUBMIT" class="btn btn-primary btn-block" id="Submit_Btn" /> *@
+                    <button class="button"><span>Submit</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"> </script>
+
+
+
+<script>
+    document.getElementById('feedbackForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var name = document.getElementById('txtname').value.trim();
+        var email = document.getElementById('txtemail').value.trim();
+        var phone = document.getElementById('txtphone').value.trim();
+        var message = document.getElementById('txtmessage').value.trim();
+
+        var nameError = document.getElementById('nameError');
+        var emailError = document.getElementById('emailError');
+        var phoneError = document.getElementById('phoneError');
+        var messageError = document.getElementById('messageError');
+
+        var isValid = true;
+
+        // Clear previous errors
+        nameError.textContent = '';
+        emailError.textContent = '';
+        phoneError.textContent = '';
+        messageError.textContent = '';
+
+        // Validate name
+        if (name === '') {
+            isValid = false;
+            nameError.textContent = 'Name is required';
+        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+            isValid = false;
+            nameError.textContent = 'Only alphabets and spaces are allowed';
+        }
+
+        // Validate email
+        if (email === '') {
+            isValid = false;
+            emailError.textContent = 'Email is required';
+        } else if (!/^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+            isValid = false;
+            emailError.textContent = 'Invalid email address';
+        }
+
+        // Validate phone
+        if (phone === '') {
+            isValid = false;
+            phoneError.textContent = 'Phone number is required';
+        } else if (!/^[6-9]\d{9}$/.test(phone)) {
+            isValid = false;
+            phoneError.textContent = 'Invalid phone number';
+        }
+
+        // Validate message
+        if (message === '') {
+            isValid = false;
+            messageError.textContent = 'Message is required';
+        }
+
+        debugger
+        if (isValid) {
+            $.ajax({
+                type: 'POST',
+                url: '/Home/MailSetup',
+                data: { name: name, email: email, phone: phone, message: message },
+                success: function (data) {
+                    if (data.success) {
+                        alert("Mail Sent Successfully");
+                        ClearTextBox();
+                    } else {
+                        alert("Failed to send mail: " + data.error);
+                    }
+                },
+                error: function () {
+                    alert("Failed to send mail");
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    //Clear text Box function
+    function ClearTextBox() {
+        $("#txtname").val('');
+        $("#txtemail").val('');
+        $("#txtphone").val('');
+        $("#txtmessage").val('');
+    }
+</script>
